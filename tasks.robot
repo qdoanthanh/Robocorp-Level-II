@@ -12,8 +12,7 @@ Library     RPA.Tables
 Library     RPA.PDF
 Library     RPA.Archive
 Library     RPA.Dialogs
-
-Variables   variables.py
+Library     RPA.Robocorp.Vault
 # -
 
 *** Variables ***
@@ -29,7 +28,8 @@ Input form dialog
 
 *** Keywords ***
 Open the robot order website
-    Open Available Browser      ${INTRANET_URL}
+    ${Order_website}=       Get Secret    Order_website
+    Open Available Browser      ${Order_website}[INTRANET_URL]
     Wait Until Element Is Visible    css:LI.nav-item:nth-child(2)
     Click Element    css:LI.nav-item:nth-child(2)
 
@@ -75,7 +75,7 @@ Store the receipt as a PDF file
 *** Keywords ***
 Take a screenshot of the robot
     [Arguments]        ${order_number}
-    ${screenshot}=      Catenate    ${CURDIR}${/}output${/}receipts${/}${order_number}.png
+    ${screenshot}=      Catenate    ${CURDIR}${/}output${/}screenshots${/}${order_number}.png
     Screenshot      id:robot-preview-image    ${screenshot}
     [Return]        ${screenshot}
 
@@ -96,7 +96,7 @@ Go to order another robot
 
 *** Keywords ***
 Create a ZIP file of the receipts
-    Archive Folder With Zip     ${CURDIR}${/}output${/}receipts     receipts.zip    recursive=True
+    Archive Folder With Zip     ${CURDIR}${/}output${/}receipts     ${CURDIR}${/}output${/}receipts.zip    recursive=True
 
 *** Tasks ***
 Order robots from RobotSpareBin Industries Inc
